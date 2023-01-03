@@ -51,6 +51,39 @@ http {
 }
 ```
 
+A bare minimum nginx.conf for your experiments:
+```nginx
+events {
+    worker_connections 1024;
+}
+http {
+    server {
+        listen 80;
+        location / {
+            proxy_set_header X-Forwarded-For $proxy_protocol_addr;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Host __TARGET_HOST__;
+            proxy_set_header ngrok-skip-browser-warning 1;
+            # add the features you need here
+            proxy_pass https://__TARGET_HOST__;
+        }
+    }
+}
+```
+
+Build a new image to test your conf:
+```Dockerfile
+FROM igops/ngrok-skip-browser-warning:latest
+COPY my.conf /etc/nginx/nginx.conf
+```
+
+Run your variant:
+```shell
+$ docker run -d --rm -p 8080:80 -e TARGET_HOST=your-domain.ngrok.io $(docker build -q /path/to/your/Dockerfile)
+```
+
+Feel free to [contribute](https://github.com/igops/ngrok-skip-browser-warning).
+
 ENV variables:
 | Variable                     | Description                                                                 |
 | -----------------------------| --------------------------------------------------------------------------- |
