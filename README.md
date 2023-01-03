@@ -11,6 +11,9 @@ $ docker run -d --rm -p 8080:80 -e TARGET_HOST=your-domain.ngrok.io igops/ngrok-
 
 Then, use `http://localhost:8080` as your API webroot.
 
+**⚠️ Disclaimer: Adding a proxy locally doesn't facilitate the fishing attacks. It solves the automation issue on your development station only.
+For more features, consider getting the [ngrok subscription](https://ngrok.com/pricing).**
+
 ![proxy](https://github.com/igops/ngrok-skip-browser-warning/blob/main/proxy.jpeg)
 
 Feel free to replace `/etc/nginx/nginx.conf` with your own implementation, or use this template in your managed nginx:
