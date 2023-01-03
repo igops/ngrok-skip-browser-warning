@@ -95,3 +95,7 @@ Feel free to [contribute](https://github.com/igops/ngrok-skip-browser-warning).
 
 ## Source code
 https://github.com/igops/ngrok-skip-browser-warning
+
+## Credits
+[@igops](https://github.com/igops)
+[@muratx10](https://github.com/muratx10)
