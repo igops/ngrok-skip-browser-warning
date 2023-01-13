@@ -3,6 +3,8 @@ From the ngrok [docs](https://ngrok.com/abuse):
 
 > _To block phishing attacks using our platform, ngrok has added an interstitial page for free accounts receiving requests from browsers. When a user visits an endpoint for the first time, ngrok will serve an interstitial page letting the user know that the content is served via ngrok and that they should not enter sensitive information unless they trust the person that sent them the link. Users should only see this page once per endpoint and it can be completely bypassed by adding the `ngrok-skip-browser-warning` header to your request._
 
+![proxy](https://github.com/igops/ngrok-skip-browser-warning/blob/main/proxy-1.png)
+
 It's tedious to add this header while developing a client for the API, which is exposed behind ngrok. In some cases, e.g. using [EventSource](https://developer.mozilla.org/en-US/docs/Web/API/EventSource), affecting the request headers seems to be impossible.
 
 ## Usage
@@ -16,7 +18,7 @@ Then, use `http://localhost:8080` as your API webroot.
 **⚠️ Disclaimer: Adding a proxy locally doesn't facilitate the fishing attacks. It solves the automation issue on your development station only.
 For more features, consider getting the [ngrok subscription](https://ngrok.com/pricing).**
 
-![proxy](https://github.com/igops/ngrok-skip-browser-warning/blob/main/proxy.jpeg)
+![proxy](https://github.com/igops/ngrok-skip-browser-warning/blob/main/proxy-2.png)
 
 ## Customization
 Feel free to replace `/etc/nginx/nginx.conf` with your own implementation, or use this template in your managed nginx:
