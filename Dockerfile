@@ -1,4 +1,4 @@
-FROM nginx
+FROM nginx:alpine
 
 LABEL maintainer="igops <hi@igops.me>"
 
