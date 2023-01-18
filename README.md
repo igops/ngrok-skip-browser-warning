@@ -13,12 +13,14 @@ To automate skipping a warning page, use this simple HTTP proxy:
 $ docker run -d --rm -p 8080:80 -e TARGET_HOST=your-domain.ngrok.io igops/ngrok-skip-browser-warning:latest
 ```
 
-Then, use `http://localhost:8080` as your API webroot.
-
-**⚠️ Disclaimer: Adding a proxy locally doesn't facilitate the fishing attacks. It solves the automation issue on your development station only.
-For more features, consider getting the [ngrok subscription](https://ngrok.com/pricing).**
+Please specify `TARGET_HOST` **without** a protocol ~http://~ or ~https://~, just a domain name. From now, use `http://localhost:8080` as your API webroot:
 
 ![proxy](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/proxy-2.png)
+
+## Disclaimer
+⚠️ The purpose of this docker image is to ease your development process. Running a proxy locally does not facilitate phishing attacks until you expose your local network to the public. This image is provided "as is", without warranty of any kind, no matter what.
+
+For more features, consider getting the [ngrok subscription](https://ngrok.com/pricing).
 
 ## Customization
 Feel free to replace `/etc/nginx/nginx.conf` with your own implementation, or use this template in your managed nginx:
