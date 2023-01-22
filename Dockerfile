@@ -1,9 +1,7 @@
 FROM nginx:alpine
-
 LABEL maintainer="igops <hi@igops.me>"
 
-ENV TARGET_HOST undefined
-ENV TARGET_SCHEME https
+ENV NGROK_HOST ""
 
 COPY nginx.conf /etc/nginx/
 COPY replace-host.sh /docker-entrypoint.d/

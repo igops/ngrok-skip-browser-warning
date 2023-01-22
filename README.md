@@ -10,10 +10,10 @@ It's tedious to add this header while developing a client for the API, which is 
 ## Usage
 To automate skipping a warning page, use this simple HTTP proxy:
 ```shell
-$ docker run -d --rm -p 8080:80 -e TARGET_HOST=your-domain.ngrok.io igops/ngrok-skip-browser-warning:latest
+$ docker run -d --rm -p 8080:80 -e NGROK_HOST=https://your-ngrok-domain.ngrok.io igops/ngrok-skip-browser-warning:latest
 ```
 
-Please specify `TARGET_HOST` **without** a protocol ~http://~ or ~https://~, just a domain name. From now, use `http://localhost:8080` as your API webroot:
+From now, use `http://localhost:8080` as your API webroot:
 
 ![proxy](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/proxy-2.png)
 
@@ -86,16 +86,15 @@ COPY my.conf /etc/nginx/nginx.conf
 
 Run your variant:
 ```shell
-$ docker run -d --rm -p 8080:80 -e TARGET_HOST=your-domain.ngrok.io $(docker build -q /path/to/your/Dockerfile)
+$ docker run -d --rm -p 8080:80 -e NGROK_HOST=https://your-ngrok-domain.ngrok.io $(docker build -q /path/to/your/Dockerfile)
 ```
 
 Feel free to [contribute](https://github.com/igops/ngrok-skip-browser-warning).
 
 ## ENV variables
-| Variable                     | Description                                                                 |
-| -----------------------------| --------------------------------------------------------------------------- |
-| TARGET_HOST                  |  your ngrok domain, e.g. `your-domain.ngrok.io`, default is `undefined`     |
-| TARGET_SCHEME                |  `http` or `https` for ngrok scheme, default is `https`                     |
+| Variable                      | Description                                                                                                                                                                                               |
+|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| NGROK_HOST                    | **Mandatory**. Your ngrok host, e.g. `https://your-ngrok-domain.ngrok.io`.<br/>Specifying a protocol is optional, `https` will be used by default.<br/>Any url parts after a domain name will be trimmed. |
 
 ## Source code
 https://github.com/igops/ngrok-skip-browser-warning
