@@ -34,11 +34,18 @@ http {
     server {
         listen 80;
         location / {
+            # regular forwarding headers
             proxy_set_header X-Forwarded-For $proxy_protocol_addr;
             proxy_set_header X-Forwarded-Proto $scheme;
             proxy_set_header Host __TARGET_HOST__;
+            
+            # this line does the actual trick 😃
             proxy_set_header ngrok-skip-browser-warning 1;
-            # add the features you need here
+
+            # add more features you need
+            # proxy_set_header ...
+            
+            # forward!
             proxy_pass https://__TARGET_HOST__;
         }
     }
