@@ -25,7 +25,7 @@ For more features, consider getting the [ngrok subscription](https://ngrok.com/p
 ## Customization
 Feel free to replace `/etc/nginx/nginx.conf` with your own implementation, or use [this template](https://github.com/igops/ngrok-skip-browser-warning/blob/main/nginx.conf) in your managed nginx.
 
-A bare minimum nginx.conf for your experiments:
+A bare minimum `nginx.conf` for your experiments:
 ```nginx
 events {
     worker_connections 1024;
@@ -37,7 +37,7 @@ http {
             # regular forwarding headers
             proxy_set_header X-Forwarded-For $proxy_protocol_addr;
             proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header Host __TARGET_HOST__;
+            proxy_set_header Host your-ngrok-domain.ngrok.io;
             
             # this line does the actual trick 😃
             proxy_set_header ngrok-skip-browser-warning 1;
@@ -46,7 +46,7 @@ http {
             # proxy_set_header ...
             
             # forward!
-            proxy_pass https://__TARGET_HOST__;
+            proxy_pass https://your-ngrok-domain.ngrok.io;
         }
     }
 }
