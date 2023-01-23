@@ -8,7 +8,7 @@ From the ngrok [docs](https://ngrok.com/abuse):
 It's tedious to add this header while developing a client for the API, which is exposed behind ngrok. In some cases, e.g. using [EventSource](https://developer.mozilla.org/en-US/docs/Web/API/EventSource), affecting the request headers seems to be impossible.
 
 ## Usage
-To automate skipping a warning page, use this simple HTTP proxy:
+To automate skipping a warning page, run this simple HTTP proxy **on the machine from where you are calling the ngrok endpoints**:
 ```shell
 $ docker run -d --rm -p 8080:80 -e NGROK_HOST=https://your-ngrok-domain.ngrok.io igops/ngrok-skip-browser-warning:latest
 ```
@@ -23,7 +23,7 @@ From now, use `http://localhost:8080` as your API webroot:
 For more features, consider getting the [ngrok subscription](https://ngrok.com/pricing).
 
 ## Customization
-Feel free to replace `/etc/nginx/nginx.conf` with your own implementation, or use [this template](https://github.com/igops/ngrok-skip-browser-warning/blob/main/nginx.conf) in your managed nginx.
+Feel free to replace `/etc/nginx/nginx.conf` with your own implementation, or use [my config](https://github.com/igops/ngrok-skip-browser-warning/blob/main/nginx.conf) as a template in your managed nginx outside Docker.
 
 A bare minimum `nginx.conf` for your experiments:
 ```nginx
