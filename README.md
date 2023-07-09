@@ -75,8 +75,9 @@ However, to distinguish WebSocket and SSE requests from regular HTTP requests, I
 You can customize the domain names on your own (see [ENV Variables](#env-variables)) or even the entire routing model (check out the [Customization](#customization) section).
 
 If you're developing a web client which communicates with the HTTP server via multiple protocols, it's worth introducing some configurable constants, such as:
-![js-client](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/js-client.png)
-[Text version](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/js-client.js)
+[![js-client](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/js-client.png)](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/js-client.js)
+<p align="center"><sub>Click on the image to show the text version</sub></p>
+
 
 Support of WebSocket and SSE was tested by running the [Echo Server](https://github.com/jmalloc/echo-server) behind a free ngrok tunnel. Consider reporting an issue if you find any problems.
 
@@ -101,8 +102,10 @@ This image uses [Nginx](https://www.nginx.com/) as a proxy server, as well as [J
 Feel free to replace `/etc/nginx/default.j2.conf` with your own implementation, or use [my config](https://github.com/igops/ngrok-skip-browser-warning/blob/main/nginx/default.j2.conf) as a basis.
 
 A very bare minimum for your experiments without templating and SSL support:
-![nginx-bare-minimum](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-bare-minimum.png)
-_[Text version](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/nginx-bare-minimum.conf)_
+
+[![nginx-bare-minimum](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-bare-minimum.png)](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/nginx-bare-minimum.conf)
+<p align="center"><sub>Click on the image to show the text version</sub></p>
+
 
 Build a new image to test your conf:
 ```Dockerfile
@@ -118,12 +121,12 @@ $ docker run -d --rm -p 8080:80 -e NGROK_HOST=https://your-ngrok-domain.ngrok.io
 ### Custom routes
 
 The simplest way to add a custom endpoint is to bind an additional `*.localhost.direct` subdomain with your own proxying rules:
-![nginx-custom-block](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-custom-block.png)
-_[Text version](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/nginx-custom-block.j2.conf)_
+[![nginx-custom-block](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-custom-block.png)](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/nginx-custom-block.j2.conf)
+<p align="center"><sub>Click on the image to show the text version</sub></p>
 
 A custom location block might be as follows:
-![nginx-custom-location](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-custom-location.png)
-_[Text version](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/nginx-custom-location.j2.conf)_
+[![nginx-custom-location](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-custom-location.png)](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/nginx-custom-location.j2.conf)
+<p align="center"><sub>Click on the image to show the text version</sub></p>
 
 ## ENV Variables
 | Variable                                | Default value                | Description                                                                                                                                                                                               |
