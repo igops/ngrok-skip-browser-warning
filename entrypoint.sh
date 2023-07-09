@@ -86,8 +86,4 @@ jinja \
   -D TargetHost "$TARGET_HOST" \
   -D AddHeaderAccessControlAllowOrigin "$ADD_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN" \
   -o /etc/nginx/conf.d/default.conf \
-  /etc/nginx/conf.d/default.j2.conf
-
-rm /etc/nginx/conf.d/default.j2.conf
-
-
+  /etc/nginx/j2/default.j2.conf

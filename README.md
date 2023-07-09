@@ -99,23 +99,21 @@ $ docker run -d --rm \
 
 This image uses [Nginx](https://www.nginx.com/) as a proxy server, as well as [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) template engine to generate the Nginx config on the fly.
 
-Feel free to replace `/etc/nginx/default.j2.conf` with your own implementation, or use [my config](https://github.com/igops/ngrok-skip-browser-warning/blob/main/nginx/default.j2.conf) as a basis.
+Feel free to replace `/etc/nginx/j2/default.j2.conf` with your own implementation, or use [my config](https://github.com/igops/ngrok-skip-browser-warning/blob/main/nginx/default.j2.conf) as a basis.
 
-A very bare minimum for your experiments without templating and SSL support:
+For instance, you might create `custom.j2.conf` with a very bare minimum for your experiments:
 
 [![nginx-bare-minimum](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-bare-minimum.png)](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/nginx-bare-minimum.conf)
 <p align="center"><sub>Click on the image to show the text version</sub></p>
 
-
-Build a new image to test your conf:
-```Dockerfile
-FROM igops/ngrok-skip-browser-warning:latest
-COPY custom.j2.conf /etc/nginx/conf.d/default.j2.conf
-```
-
-Run your variant:
+Mount it as follows:
 ```shell
-$ docker run -d --rm -p 8080:80 -e NGROK_HOST=https://your-ngrok-domain.ngrok.io $(docker build -q /path/to/your/Dockerfile)
+$ docker run -d --rm \
+  -p 8443:443 \
+  -p 8080:80 \
+  -e NGROK_HOST=https://your-ngrok-domain.ngrok.io \
+  -v $PWD/custom.j2.conf:/etc/nginx/j2/default.j2.conf \
+  igops/ngrok-skip-browser-warning:latest
 ```
 
 ### Custom routes

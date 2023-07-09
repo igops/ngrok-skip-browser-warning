@@ -16,7 +16,8 @@ ENV PROXY_SSL_KEY_NAME "localhost.direct.key"
 
 ENV ADD_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN ""
 
-COPY nginx/default.j2.conf /etc/nginx/conf.d/default.j2.conf
+RUN mkdir -p /etc/nginx/j2
+COPY nginx/default.j2.conf /etc/nginx/j2
 
 COPY entrypoint.sh /docker-entrypoint.d
 RUN chmod +x /docker-entrypoint.d/entrypoint.sh
