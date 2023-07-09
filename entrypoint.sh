@@ -88,6 +88,6 @@ jinja \
   -o /etc/nginx/conf.d/default.conf \
   /etc/nginx/conf.d/default.j2.conf
 
-cat /etc/nginx/conf.d/default.conf
+rm /etc/nginx/conf.d/default.j2.conf
 
 
