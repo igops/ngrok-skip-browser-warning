@@ -1,4 +1,4 @@
-A simple HTTP forward proxy for bypassing browser warning of Ngrok. Full support of SSL (free certificates included!), WebSocket, SSE and CORS.
+A simple HTTPS forward proxy for bypassing browser warning of Ngrok. Full support of SSL (free certificates included!), WebSocket, SSE and CORS.
 
 **Prerequisites:**
 - Somebody has sent you a link to an Ngrok endpoint, but it returns a warning page instead of the expected content
