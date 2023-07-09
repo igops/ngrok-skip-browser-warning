@@ -49,7 +49,7 @@ E.g., you were told to call `GET https://your-ngrok-domain.ngrok.io/api/v1/whate
 
 ### Relay over HTTP (not recommended)
 
-If for some reason you don't want to use HTTPS relay, you can continue using `https://ngrok.localhost.direct:8080` or `http://localhost:8080` as your API webroot.
+If for some reason you don't want to use HTTPS relay, you can continue using `http://ngrok.localhost.direct:8080` or `http://localhost:8080` as your API webroot.
 
 You can disable all SSL-related features by passing `PROXY_USE_SSL=false` environment variable:
 ```shell
@@ -76,8 +76,9 @@ You can customize the domain names on your own (see [ENV Variables](#env-variabl
 
 If you're developing a web client which communicates with the HTTP server via multiple protocols, it's worth introducing some configurable constants, such as:
 ![js-client](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/js-client.png)
+[Text version](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/js-client.js)
 
-Support of WebSocket and SSE was tested by running the [Echo Server](jmalloc/echo-server) behind a free ngrok tunnel. Consider reporting an issue if you find any problems.
+Support of WebSocket and SSE was tested by running the [Echo Server](https://github.com/jmalloc/echo-server) behind a free ngrok tunnel. Consider reporting an issue if you find any problems.
 
 ### CORS Support
 
@@ -101,6 +102,7 @@ Feel free to replace `/etc/nginx/default.j2.conf` with your own implementation, 
 
 A very bare minimum for your experiments without templating and SSL support:
 ![nginx-bare-minimum](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-bare-minimum.png)
+_[Text version](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/nginx-bare-minimum.conf)_
 
 Build a new image to test your conf:
 ```Dockerfile
@@ -117,10 +119,11 @@ $ docker run -d --rm -p 8080:80 -e NGROK_HOST=https://your-ngrok-domain.ngrok.io
 
 The simplest way to add a custom endpoint is to bind an additional `*.localhost.direct` subdomain with your own proxying rules:
 ![nginx-custom-block](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-custom-block.png)
+_[Text version](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/nginx-custom-block.j2.conf)_
 
 A custom location block might be as follows:
 ![nginx-custom-location](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-custom-location.png)
-
+_[Text version](https://github.com/igops/ngrok-skip-browser-warning/blob/main/examples/nginx-custom-location.j2.conf)_
 
 ## ENV Variables
 | Variable                                | Default value                | Description                                                                                                                                                                                               |
