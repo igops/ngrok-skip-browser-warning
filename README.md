@@ -1,3 +1,12 @@
+A simple HTTP forward proxy for bypassing browser warning of Ngrok. Full support of SSL (free certificates included!), WebSocket, SSE and CORS.
+
+**Prerequisites:**
+- Somebody has sent you a link to an Ngrok endpoint, but it returns a warning page instead of the expected content
+- You might be a web developer who is trying to use that endpoint in your code and curious how to bypass the warning page without rewriting the logic
+- You have a Docker installed on your machine
+
+OK, take me to the good part: [Usage](#usage)
+
 ## Preface
 From the ngrok [docs](https://ngrok.com/abuse):
 
@@ -9,56 +18,94 @@ It's tedious to add this header while developing a client for the API, which is 
 
 Add a **forward proxy** which will add the `ngrok-skip-browser-warning` header to all HTTP requests:
 
-![proxy](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/ngrok-skip-browser-warning.gif)
-
-## Usage
-
-Run this image  **on the machine from where you are calling the ngrok endpoints**:
-```shell
-$ docker run -d --rm -p 8080:80 -e NGROK_HOST=https://your-ngrok-domain.ngrok.io igops/ngrok-skip-browser-warning:latest
-```
-
-From now, use `http://localhost:8080` as your API webroot.
+![proxy](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/ngrok-skip-browser-warning.gif)
 
 ## Disclaimer
 ⚠️ The purpose of this docker image is to ease your development process. Running a proxy locally does not facilitate phishing attacks until you expose your local network to the public. This image is provided "as is", without warranty of any kind, no matter what.
 
 For more features, consider getting the [ngrok subscription](https://ngrok.com/pricing).
 
-## Customization
-Feel free to replace `/etc/nginx/nginx.conf` with your own implementation, or use [my config](https://github.com/igops/ngrok-skip-browser-warning/blob/main/nginx.conf) as a template in your managed nginx outside Docker.
+## Usage
 
-A bare minimum `nginx.conf` for your experiments:
-```nginx
-events {
-    worker_connections 1024;
-}
-http {
-    server {
-        listen 80;
-        location / {
-            # regular forwarding headers
-            proxy_set_header X-Forwarded-For $proxy_protocol_addr;
-            proxy_set_header X-Forwarded-Proto $scheme;
-            proxy_set_header Host your-ngrok-domain.ngrok.io;
-            
-            # this line does the actual trick 😃
-            proxy_set_header ngrok-skip-browser-warning 1;
+### Relay over HTTPS (recommended)
 
-            # add more features you need
-            # proxy_set_header ...
-            
-            # forward!
-            proxy_pass https://your-ngrok-domain.ngrok.io;
-        }
-    }
-}
+Starting from 2023 July 9th, this image includes setup of a valid public CA signed SSL certificate and supports HTTPS (thanks to [localhost.direct](https://get.localhost.direct) project).
+
+Run this **on the machine from where you are calling the ngrok endpoints**:
+
+```shell
+$ docker run -d --rm \
+  -p 8443:443 \
+  -p 8080:80 \
+  -e NGROK_HOST=https://your-ngrok-domain.ngrok.io \
+  igops/ngrok-skip-browser-warning:latest
 ```
+
+From now, use `https://ngrok.localhost.direct:8443` as your API webroot.
+
+E.g., you were told to call `GET https://your-ngrok-domain.ngrok.io/api/v1/whatever`. Now you just call `GET https://ngrok.localhost.direct:8443/api/v1/whatever` instead, and get the response **without the warning page!**
+
+`*.localhost.direct` is a wildcard record of the public DNS pointing to `127.0.0.1`. You might want to customize the domain name to bind the proxy to, as well as the SSL certificates (see [ENV Variables](#env-variables) below).
+
+### Relay over HTTP (not recommended)
+
+If for some reason you don't want to use HTTPS relay, you can continue using `https://ngrok.localhost.direct:8080` or `http://localhost:8080` as your API webroot.
+
+You can disable all SSL-related features by passing `PROXY_USE_SSL=false` environment variable:
+```shell
+$ docker run -d --rm \
+  -p 8080:80 \
+  -e NGROK_HOST=https://your-ngrok-domain.ngrok.io \
+  -e PROXY_USE_SSL=false \
+  igops/ngrok-skip-browser-warning:latest
+```
+
+### WebSocket and SSE Support
+
+WebSocket and SSE protocols require a special handling of the `Upgrade` and `Connection` headers. This image supports both protocols out of the box.
+
+However, to distinguish WebSocket and SSE requests from regular HTTP requests, I have implemented the conditional routing based on the request domain names:
+
+| Protocol            | Over HTTPS                                | Over HTTP                                |
+|---------------------|-------------------------------------------|------------------------------------------|
+| REST, GraphQL, etc. | `https://ngrok.localhost.direct:8443`     | `http://ngrok.localhost.direct:8080`     |
+| WebSocket           | `wss://ngrok-ws.localhost.direct:8443`    | `ws://ngrok-ws.localhost.direct:8080`    |
+| SSE                 | `https://ngrok-sse.localhost.direct:8443` | `http://ngrok-sse.localhost.direct:8080` |
+
+You can customize the domain names on your own (see [ENV Variables](#env-variables)) or even the entire routing model (check out the [Customization](#customization) section).
+
+If you're developing a web client which communicates with the HTTP server via multiple protocols, it's worth introducing some configurable constants, such as:
+![js-client](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/js-client.png)
+
+Support of WebSocket and SSE was tested by running the [Echo Server](jmalloc/echo-server) behind a free ngrok tunnel. Consider reporting an issue if you find any problems.
+
+### CORS Support
+
+You can configure the proxy to add the `Access-Control-Allow-Origin` header to all responses by setting the `ADD_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN` environment variable:
+```shell
+$ docker run -d --rm \
+  -p 8443:443 \
+  -p 8080:80 \
+  -e NGROK_HOST=https://your-ngrok-domain.ngrok.io \
+  -e ADD_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN='*' \
+  igops/ngrok-skip-browser-warning:latest
+```
+
+## Customization
+
+### Setup
+
+This image uses [Nginx](https://www.nginx.com/) as a proxy server, as well as [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) template engine to generate the Nginx config on the fly.
+
+Feel free to replace `/etc/nginx/default.j2.conf` with your own implementation, or use [my config](https://github.com/igops/ngrok-skip-browser-warning/blob/main/nginx/default.j2.conf) as a basis.
+
+A very bare minimum for your experiments without templating and SSL support:
+![nginx-bare-minimum](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-bare-minimum.png)
 
 Build a new image to test your conf:
 ```Dockerfile
 FROM igops/ngrok-skip-browser-warning:latest
-COPY my.conf /etc/nginx/nginx.conf
+COPY custom.j2.conf /etc/nginx/conf.d/default.j2.conf
 ```
 
 Run your variant:
@@ -66,15 +113,33 @@ Run your variant:
 $ docker run -d --rm -p 8080:80 -e NGROK_HOST=https://your-ngrok-domain.ngrok.io $(docker build -q /path/to/your/Dockerfile)
 ```
 
-Feel free to [contribute](https://github.com/igops/ngrok-skip-browser-warning).
+### Custom routes
 
-## ENV variables
-| Variable                      | Description                                                                                                                                                                                               |
-|-------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| NGROK_HOST                    | **Mandatory**. Your ngrok host, e.g. `https://your-ngrok-domain.ngrok.io`.<br/>Specifying a protocol is optional, `https` will be used by default.<br/>Any url parts after a domain name will be trimmed. |
+The simplest way to add a custom endpoint is to bind an additional `*.localhost.direct` subdomain with your own proxying rules:
+![nginx-custom-block](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-custom-block.png)
+
+A custom location block might be as follows:
+![nginx-custom-location](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/nginx-custom-location.png)
+
+
+## ENV Variables
+| Variable                                | Default value                | Description                                                                                                                                                                                               |
+|-----------------------------------------|------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| NGROK_HOST                              | -                            | **Mandatory**. Your ngrok host, e.g. `https://your-ngrok-domain.ngrok.io`.<br/>Specifying a protocol is optional, `https` will be used by default.<br/>Any url parts after a domain name will be trimmed. |
+| PROXY_HOST_REST                         | `ngrok.localhost.direct`     | Optional. A domain name to bind to REST API calls.                                                                                                                                                        |
+| PROXY_HOST_WS_SUPPORT                   | `ngrok-ws.localhost.direct`  | Optional. A domain name to bind to WebSocket API calls.                                                                                                                                                   |
+| PROXY_HOST_SSE_SUPPORT                  | `ngrok-sse.localhost.direct` | Optional. A domain name to bind to SSE API calls.                                                                                                                                                         |
+| PROXY_USE_SSL                           | `true`                       | Optional. Enables relay over HTTPS. You can mount your own certificates to `/etc/nginx/certs`. If the directory is not mounted, `localhost.direct` certificate will be downloaded on container bootstrap. |
+| PROXY_FORCE_HTTPS                       | `false`                      | Optional. Forcibly redirect HTTP calls to HTTPS.                                                                                                                                                          |
+| PROXY_SSL_CERT_NAME                     | `localhost.direct.crt`       | Optional. Override the name of the certificate file. Mount the file to `/etc/nginx/certs/my-custom-cert.crt`.                                                                                             |
+| PROXY_SSL_KEY_NAME                      | `localhost.direct.key`       | Optional. Override the name of the certificate key. Mount the file to `/etc/nginx/certs/my-custom-cert.key`.                                                                                              |
+| ADD_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN  | (empty string)               | Optional. Add custom [Access-Control-Allow-Origin](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin) to all responses.                                               |
+
 
 ## Source code
 https://github.com/igops/ngrok-skip-browser-warning
+
+Feel free to [contribute](https://github.com/igops/ngrok-skip-browser-warning).
 
 ## Credits
 [@igops](https://github.com/igops)
