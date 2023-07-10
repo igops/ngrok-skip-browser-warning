@@ -118,7 +118,7 @@ $ docker run -d --rm \
 
 ### Jinja Template Variables
 
-Jinja template variables refer to the [ENV variables](#env-variables) with the same names:
+Jinja template variables refer to the [ENV variables](#env-variables) with the same names in SNAKE_UPPER_CASE.
 
 | Jinja Variable                    | Environment Variable                                   |
 |-----------------------------------|--------------------------------------------------------|
