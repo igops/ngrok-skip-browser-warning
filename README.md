@@ -116,6 +116,24 @@ $ docker run -d --rm \
   igops/ngrok-skip-browser-warning:latest
 ```
 
+### Jinja Template Variables
+
+Jinja template variables refer to the [ENV variables](#env-variables) with the same names:
+
+| Jinja Variable                    | Environment Variable                                   |
+|-----------------------------------|--------------------------------------------------------|
+| ProxyHostREST                     | `PROXY_HOST_REST`                                      |
+| ProxyHostWSSupport                | `PROXY_HOST_WS_SUPPORT`                                |
+| ProxyHostSSESupport               | `PROXY_HOST_SSE_SUPPORT`                               |
+| ProxyUseSSL                       | `PROXY_USE_SSL`                                        |
+| ProxySSLCertName                  | `PROXY_SSL_CERT_NAME`                                  |
+| ProxySSLKeyName                   | `PROXY_SSL_KEY_NAME`                                   |
+| ProxyForceHTTPS                   | `PROXY_FORCE_HTTPS`                                    |
+| TargetScheme                      | Scheme of `NGROK_HOST` (typically equals to `https`)   |
+| TargetHost                        | Domain name of `NGROK_HOST`                            | 
+| AddHeaderAccessControlAllowOrigin | `ADD_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN`               |
+
+
 ### Custom routes
 
 The simplest way to add a custom endpoint is to bind an additional `*.localhost.direct` subdomain with your own proxying rules:
