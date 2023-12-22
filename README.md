@@ -18,7 +18,7 @@ It's tedious to add this header while developing a client for the API, which is 
 
 Add a **forward proxy** which will add the `ngrok-skip-browser-warning` header to all HTTP requests:
 
-![proxy](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/ngrok-skip-browser-warning-2.png)
+![proxy](https://raw.githubusercontent.com/igops/ngrok-skip-browser-warning/main/img/ngrok-skip-browser-warning-3.png)
 
 ## Disclaimer
 ⚠️ The purpose of this docker image is to ease your development process. Running a proxy locally does not facilitate phishing attacks until you expose your local network to the public. This image is provided "as is", without warranty of any kind, no matter what.
