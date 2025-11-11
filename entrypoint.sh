@@ -65,7 +65,7 @@ if [ "$PROXY_USE_SSL" = "true" ]; then
 
   if [ -z "$(ls -A $CERTS_DIR)" ]; then
     echo "Downloading localhost.direct certificates..."
-    curl -o certs.zip -LOs https://aka.re/localhost
+    curl -o certs.zip -LOs https://aka.re/localhost-ss
     unzip -P localhost certs.zip
     rm certs.zip
     mv localhost.direct.* $CERTS_DIR
