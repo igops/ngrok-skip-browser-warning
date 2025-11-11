@@ -48,11 +48,11 @@ fi
 PROXY_FORCE_HTTPS=${PROXY_FORCE_HTTPS,,}
 
 if [ -z "$PROXY_SSL_CERT_NAME" ]; then
-  PROXY_SSL_CERT_NAME="localhost.direct.crt"
+  PROXY_SSL_CERT_NAME="localhost.direct.SS.crt"
 fi
 
 if [ -z "$PROXY_SSL_KEY_NAME" ]; then
-  PROXY_SSL_KEY_NAME="localhost.direct.key"
+  PROXY_SSL_KEY_NAME="localhost.direct.SS.key"
 fi
 
 if [ -z "$ADD_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN" ]; then
